@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>太空大戰 - Space Battle</title>
+    <style>
+        /* 臨時內聯樣式，確保元素可見 */
+        #game-container {
+            position: relative;
+            width: 800px;
+            height: 400px; /* 添加固定高度 */
+            margin: 20px auto;
+            background: #000;
+        }
+        #game-stats {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 100;
+            color: white;
+            font-size: 18px;
+            display: flex;
+            gap: 20px;
+        }
+        #gameCanvas {
+            border: 2px solid #333;
+            background: #000;
+            display: block;
+            height: 400px; /* 設置畫布高度 */
+        }
+        #game-controls {
+            margin-top: 10px; /* 減少上邊距 */
+            text-align: center;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px; /* 稍微縮小按鈕 */
+            margin: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        #game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            display: none;
+        }
+        #start-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        #start-screen h1 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+        #start-screen button {
+            font-size: 24px;
+            padding: 15px 30px;
+            background: #4CAF50;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        #start-screen button:hover {
+            background: #45a049;
+        }
+        
+        /* 添加禁用按鈕樣式 */
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        /* 添加作者信息樣式 */
+        #author-info {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            font-family: Arial, sans-serif;
+            z-index: 100;
+            text-align: right;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body style="background: #000; margin: 0; padding: 20px;">
+    <!-- 背景音樂 -->
+    <audio id="bgm" loop>
+        <source src="assets/sounds/battle-march-action.mp3" type="audio/mp3">
+    </audio>
+
+    <div id="game-container">
+        <!-- 開始畫面 -->
+        <div id="start-screen">
+            <h1>太空大戰</h1>
+            <button id="enter-button">進入遊戲</button>
+        </div>
+
+        <!-- 作者信息 -->
+        <div id="author-info">
+            作者：林士貴<br>
+            版本：20250715_1
+        </div>
+
+        <!-- 遊戲狀態顯示 -->
+        <div id="game-stats">
+            <span id="score">分數: 0</span>
+            <span id="lives">生命: 3</span>
+            <button id="sound-toggle">音效: 開</button>
+        </div>
+
+        <!-- 遊戲畫布 -->
+        <canvas id="gameCanvas" width="800" height="400"></canvas>
+
+        <!-- 遊戲控制按鈕 -->
+        <div id="game-controls">
+            <button id="start-button" disabled>開始遊戲</button>
+            <button id="pause-button" style="display: none;">暫停</button>
+            <button id="restart-button" style="display: none;">重新開始</button>
+        </div>
+
+        <!-- 遊戲結束畫面 -->
+        <div id="game-over">
+            <h2>遊戲結束</h2>
+            <p>最終分數: <span id="final-score">0</span></p>
+            <button id="play-again">再玩一次</button>
+        </div>
+    </div>
+
+    <!-- 遊戲腳本 -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/gameObjects.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/main.js"></script>
+
+    <script>
+        // 設置背景音樂音量
+        const bgm = document.getElementById('bgm');
+        bgm.volume = 0.3;
+        
+        // 獲取按鈕元素
+        const enterButton = document.getElementById('enter-button');
+        const startButton = document.getElementById('start-button');
+        const startScreen = document.getElementById('start-screen');
+        
+        // 進入遊戲按鈕點擊事件
+        enterButton.addEventListener('click', () => {
+            // 播放背景音樂
+            bgm.play().catch(err => console.log('背景音樂播放失敗:', err));
+            
+            // 隱藏開始畫面
+            startScreen.style.display = 'none';
+            
+            // 啟用開始遊戲按鈕
+            startButton.disabled = false;
+        });
+        
+        // 綁定音效開關按鈕
+        document.getElementById('sound-toggle').addEventListener('click', () => {
+            bgm.muted = !bgm.muted;
+            document.getElementById('sound-toggle').textContent = `音效: ${bgm.muted ? '關' : '開'}`;
+        });
+    </script>
+</body>
+</html> 
